@@ -5,7 +5,7 @@ pipeline{
         nodejs 'node20'
     }
     environment {
-        SCANNER_HOME=tool 'sonar-scanner'
+        SCANNER_HOME=/var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner
         SONAR_PROJECT_KEY = 'swiggy-app-gaetan'
         SONAR_URL      = 'https://sonarqube.devopspro.cloud'
     }
