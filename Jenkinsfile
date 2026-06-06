@@ -7,6 +7,7 @@ pipeline{
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
         SONAR_PROJECT_KEY = 'swiggy-app-gaetan'
+        SONAR_URL      = 'https://sonarqube.devopspro.cloud'
     }
     stages {
         stage('clean workspace'){
