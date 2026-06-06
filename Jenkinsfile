@@ -15,7 +15,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git 'https://github.com/Gaetanneo/DevOps-Project-Swiggy-app.git'
+                git branch: 'master', url: 'https://github.com/Gaetanneo/DevOps-Project-Swiggy-app.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -47,9 +47,10 @@ pipeline{
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
             }
         }
-        stage('TRIVY FS SCAN') {
+        stage('Trivy Filesystem Scan') {
             steps {
-                sh "trivy fs . > trivyfs.txt"
+                sh "trivy fs . --exit-code 0 --severity HIGH,CRITICAL -f table -o trivy-fs-report.txt"
+                archiveArtifacts artifacts: 'trivy-fs-report.txt', allowEmptyArchive: true
             }
         }
         stage("Docker Build & Push"){
@@ -63,18 +64,19 @@ pipeline{
                 }
             }
         }
-        stage("TRIVY"){
-            steps{
-                sh "trivy image gaetanneo/swiggy:latest > trivy.txt" 
+        stage('Trivy Image Scan') {
+            steps {
+                sh "trivy image gaetanneo/swiggy:latest --exit-code 0 --severity HIGH,CRITICAL -f table -o trivy-image-report.txt"
+                archiveArtifacts artifacts: 'trivy-image-report.txt', allowEmptyArchive: true
             }
         }
-        stage('Deploy to container'){
-            steps{
-                sh '''
-                docker rm -f swiggy || true
-                docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
-                '''
-            }
-        }
+        // stage('Deploy to container'){
+        //     steps{
+        //         sh '''
+        //         docker rm -f swiggy || true
+        //         docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
+        //         '''
+        //     }
+        // }
     }
 }
