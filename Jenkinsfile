@@ -24,17 +24,12 @@ pipeline{
                 script {
                     def scannerHome = tool 'sonar-scanner'
 
-                    withCredentials([
-                        string(credentialsId: 'sonar-token-gaetan',
-                               variable: 'SONAR_TOKEN')
-                    ]) {
+                    withSonarQubeEnv('SonarQube') {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                            -Dsonar.projectName=${SONAR_PROJECT_KEY} \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_URL} \
-                            -Dsonar.token=${SONAR_TOKEN}
+                            -Dsonar.projectKey=swiggy-app-gaetan \
+                            -Dsonar.projectName=swiggy-app-gaetan \
+                            -Dsonar.sources=.
                         """
                     }
                 }
