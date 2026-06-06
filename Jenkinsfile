@@ -5,7 +5,7 @@ pipeline{
         nodejs 'node20'
     }
     environment {
-        SCANNER_HOME=tool 'SonarQube'
+        SCANNER_HOME=tool 'sonar-scanner'
     }
     stages {
         stage('clean workspace'){
@@ -20,9 +20,9 @@ pipeline{
         }
         stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('sonar-scanner') {
                     sh ''' 
-                    $SCANNER_HOME/bin/SonarQube \
+                    $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectName=swiggy-app-gaetan \
                         -Dsonar.projectKey=swiggy-app-gaetan 
                     '''
