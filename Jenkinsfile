@@ -49,15 +49,20 @@ pipeline{
                     def scannerHome = tool 'SonarScanner'
 
                     withSonarQubeEnv('SonarQube') {
-                        sh """
+                        withEnv([
+                            'JAVA_HOME=/usr/lib/jvm/java-21-openjdk',
+                            'PATH+JAVA=/usr/lib/jvm/java-21-openjdk/bin'
+                    ]) {
+                        sh '''
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=swiggy-app-gaetan \
                             -Dsonar.projectName=swiggy-app-gaetan \
                             -Dsonar.sources=.
-                        """
+                        '''
                     }
                 }
             }
+          }
         }
         stage("quality gate"){
            steps {
