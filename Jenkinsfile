@@ -22,11 +22,11 @@ pipeline{
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'sonar-scanner'
+                    def scannerHome = tool 'SonarScanner'
 
                     withSonarQubeEnv('SonarQube') {
                         sh """
-                            ${scannerHome}/bin/SonarScanner \
+                            ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=swiggy-app-gaetan \
                             -Dsonar.projectName=swiggy-app-gaetan \
                             -Dsonar.sources=.
