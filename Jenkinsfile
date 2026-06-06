@@ -22,8 +22,9 @@ pipeline{
             steps{
                 withSonarQubeEnv('sonar-scanner') {
                     sh ''' 
-                        -Dsonar.projectName=swiggy-app-gaetan \
-                        -Dsonar.projectKey=swiggy-app-gaetan 
+                    $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectName=Swiggy \
+                        -Dsonar.projectKey=Swiggy 
                     '''
                 }
             }
