@@ -19,6 +19,30 @@ pipeline{
                 git branch: 'master', url: 'https://github.com/Gaetanneo/DevOps-Project-Swiggy-app.git'
             }
         }
+
+        stage('Debug Sonar Environment') {
+            steps {
+                script {
+                    def scannerHome = tool 'SonarScanner'
+
+                    sh """
+                        echo "=== JAVA ==="
+                        which java || true
+                        java -version || true
+                        echo "JAVA_HOME=\$JAVA_HOME"
+
+                        echo ""
+                        echo "=== SONAR ==="
+                        echo "${scannerHome}"
+                        ls -l ${scannerHome}/bin
+
+                        echo ""
+                        echo "=== SONAR VERSION ==="
+                        ${scannerHome}/bin/sonar-scanner --version || true
+                    """
+               }
+           }
+        }
         stage('SonarQube Analysis') {
             steps {
                 script {
