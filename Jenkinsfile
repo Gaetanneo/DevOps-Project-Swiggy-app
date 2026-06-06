@@ -5,7 +5,6 @@ pipeline{
         nodejs 'node20'
     }
     environment {
-        SCANNER_HOME=/var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner
         SONAR_PROJECT_KEY = 'swiggy-app-gaetan'
         SONAR_URL      = 'https://sonarqube.devopspro.cloud'
     }
@@ -22,18 +21,22 @@ pipeline{
         }
         stage('SonarQube Analysis') {
             steps {
-                withCredentials([
-                    string(credentialsId: 'sonar-token-gaetan',
-                           variable: 'SONAR_TOKEN')
-                ]) {
-                    sh '''
-                        $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectKey=swiggy-app-gaetan \
-                        -Dsonar.projectName=swiggy-app-gaetan \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=$SONAR_URL \
-                        -Dsonar.token=$SONAR_TOKEN
-                    '''
+                script {
+                    def scannerHome = tool 'sonar-scanner'
+
+                    withCredentials([
+                        string(credentialsId: 'sonar-token-gaetan',
+                               variable: 'SONAR_TOKEN')
+                    ]) {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                            -Dsonar.projectName=${SONAR_PROJECT_KEY} \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=${SONAR_URL} \
+                            -Dsonar.token=${SONAR_TOKEN}
+                        """
+                    }
                 }
             }
         }
