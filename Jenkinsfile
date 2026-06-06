@@ -21,13 +21,18 @@ pipeline{
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.projectName='swiggy-app-gaetan' \
-                        -Dsonar.java.binaries=target/classes
-                    """
+                withCredentials([
+                    string(credentialsId: 'sonar-token-gaetan',
+                           variable: 'SONAR_TOKEN')
+                ]) {
+                    sh '''
+                        $SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=swiggy-app-gaetan \
+                        -Dsonar.projectName=swiggy-app-gaetan \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=$SONAR_URL \
+                        -Dsonar.token=$SONAR_TOKEN
+                    '''
                 }
             }
         }
