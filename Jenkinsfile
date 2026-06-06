@@ -26,7 +26,7 @@ pipeline{
 
                     withSonarQubeEnv('SonarQube') {
                         sh """
-                            ${scannerHome}/bin/sonar-scanner \
+                            ${scannerHome}/bin/SonarScanner \
                             -Dsonar.projectKey=swiggy-app-gaetan \
                             -Dsonar.projectName=swiggy-app-gaetan \
                             -Dsonar.sources=.
