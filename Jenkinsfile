@@ -1,8 +1,8 @@
 pipeline{
     agent any
     tools{
-        jdk 'jdk17'
-        nodejs 'node23'
+        jdk 'jdk21'
+        nodejs 'node20'
     }
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
@@ -15,16 +15,16 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git 'https://github.com/KastroVKiran/DevOps-Project-Swiggy.git'
+                git 'https://github.com/Gaetanneo/DevOps-Project-Swiggy-app.git'
             }
         }
         stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('sonar-server') {
+                withSonarQubeEnv('SonarQube') {
                     sh ''' 
-                    $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectName=Swiggy \
-                        -Dsonar.projectKey=Swiggy 
+                    $SCANNER_HOME/bin/SonarQube \
+                        -Dsonar.projectName=swiggy-app-gaetan \
+                        -Dsonar.projectKey=swiggy-app-gaetan 
                     '''
                 }
             }
@@ -32,7 +32,7 @@ pipeline{
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token-gaetan' 
                 }
             } 
         }
@@ -57,22 +57,22 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker-creds', toolName: 'docker'){   
                        sh "docker build -t swiggy ."
-                       sh "docker tag swiggy kastrov/swiggy:latest "
-                       sh "docker push kastrov/swiggy:latest "
+                       sh "docker tag swiggy gaetanneo/swiggy:latest "
+                       sh "docker push gaetanneo/swiggy:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image kastrov/swiggy:latest > trivy.txt" 
+                sh "trivy image gaetanneo/swiggy:latest > trivy.txt" 
             }
         }
         stage('Deploy to container'){
             steps{
                 sh '''
                 docker rm -f swiggy || true
-                docker run -d --name swiggy -p 3000:3000 kastrov/swiggy:latest
+                docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
                 '''
             }
         }
