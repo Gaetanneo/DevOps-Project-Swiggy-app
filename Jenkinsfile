@@ -6,6 +6,7 @@ pipeline{
     }
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
+        SONAR_URL      = 'https://sonarqube.devopspro.cloud'
     }
     stages {
         stage('clean workspace'){
@@ -18,14 +19,17 @@ pipeline{
                 git branch: 'master', url: 'https://github.com/Gaetanneo/DevOps-Project-Swiggy-app.git'
             }
         }
-        stage("Sonarqube Analysis "){
-            steps{
-                withSonarQubeEnv('sonar-scanner') {
-                    sh ''' 
-                    $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectName=Swiggy \
-                        -Dsonar.projectKey=Swiggy 
-                    '''
+        stage('SonarQube Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar-token-gaetan', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                        /home/ubuntu/sonar-scanner/bin/sonar-scanner \
+                          -Dsonar.projectKey=swiggy-app-gaetan \
+                          -Dsonar.projectName=swiggy-app-gaetan \
+                          -Dsonar.sources=. \
+                          -Dsonar.host.url=${SONAR_URL} \
+                          -Dsonar.token=${SONAR_TOKEN}
+                    """
                 }
             }
         }
