@@ -86,7 +86,7 @@ pipeline{
         stage("Docker Build & Push"){
             steps{
                 script{
-                   withDockerRegistry(credentialsId: 'docker-creds', toolName: 'docker'){   
+                   withDockerRegistry(credentialsId: 'docker-creds') {   
                        sh "docker build -t swiggy ."
                        sh "docker tag swiggy gaetanneo/swiggy:latest "
                        sh "docker push gaetanneo/swiggy:latest "
