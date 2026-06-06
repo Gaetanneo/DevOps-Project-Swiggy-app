@@ -20,9 +20,9 @@ pipeline{
         }
         stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('sonar-scanner') {
+                withSonarQubeEnv('SonarScanner') {
                     sh ''' 
-                    $SCANNER_HOME/bin/sonar-scanner \
+                    $SCANNER_HOME/bin/SonarScanner \
                         -Dsonar.projectName=swiggy-app-gaetan \
                         -Dsonar.projectKey=swiggy-app-gaetan 
                     '''
