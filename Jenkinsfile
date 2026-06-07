@@ -7,6 +7,9 @@ pipeline{
     environment {
         SONAR_PROJECT_KEY = 'swiggy-app-gaetan'
         SONAR_URL      = 'https://sonarqube.devopspro.cloud'
+        EC2_HOST       = '107.21.136.9'
+        EC2_USER       = 'ubuntu'
+        IMAGE          = 'gaetanneo/swiggy:latest'
     }
     stages {
         stage('clean workspace'){
@@ -106,13 +109,17 @@ pipeline{
                 '''
              }
         }
-        // stage('Deploy to container'){
-        //     steps{
-        //         sh '''
-        //         docker rm -f swiggy || true
-        //         docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
-        //         '''
-        //     }
-        // }
+        stage('Deploy to EC2 Host'){
+            steps{
+                sshagent(credentials: ['ec2-ssh-key']) {
+                    sh '''
+                        ssh -o StrictkHostKeyChecking=no ${EC2_USER}@{EC2_HOST} "
+                            docker pull ${IMAGE} &&
+                            docker rm -f swiggy || true &&
+                            docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
+                        "
+                    '''
+            }
+        }
     }
 }
