@@ -113,7 +113,7 @@ pipeline{
             steps{
                 sshagent(credentials: ['ec2-ssh-key']) {
                     sh '''
-                        ssh -o StrictkHostKeyChecking=no ${EC2_USER}@{EC2_HOST} "
+                        ssh -o StrictHostKeyChecking=no ${EC2_USER}@{EC2_HOST} "
                             docker pull ${IMAGE} &&
                             docker rm -f swiggy || true &&
                             docker run -d --name swiggy -p 3000:3000 gaetanneo/swiggy:latest
