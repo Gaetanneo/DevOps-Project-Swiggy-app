@@ -81,21 +81,9 @@ pipeline{
             steps {
                 sh '''
                 trivy fs . \
-                  --exit-code 0 \
                   --severity HIGH,CRITICAL \
-                  --format template \
-                  --template "@/opt/trivy/templates/html.tpl" \
-                  -o trivy-fs-report.html
+                  --format table
                 '''
-
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'trivy-fs-report.html',
-                    reportName: 'Trivy Filesystem Scan Report'
-                ])
             }
         }
         stage("Docker Build & Push"){
@@ -113,21 +101,9 @@ pipeline{
             steps {
                 sh '''
                 trivy image gaetanneo/swiggy:latest \
-                  --exit-code 0 \
                   --severity HIGH,CRITICAL \
-                  --format template \
-                  --template "@/opt/trivy/templates/html.tpl" \
-                  -o trivy-image-report.html
+                  --format table \
                 '''
-
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'trivy-image-report.html',
-                    reportName: 'Trivy Image Scan Report'
-                ])
              }
         }
         // stage('Deploy to container'){
